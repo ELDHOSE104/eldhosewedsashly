@@ -417,28 +417,24 @@
     	enableUtc: false
     });
 
-
-    var maudio = document.getElementById('myaudio');
-
-    var soundSprite = [
-      {start: 0, end: 3000},
-      {start: 3500, end: 6789}
-    ];
-
-    element.addEventListener('touchstart', function(ev) {
-      maudio.play();
-      playSoundFile(0);
-    })
-
-    function playSoundFile(idx) {
-      maudio.currentPosition = soundSprite[idx].start;
-      var x = setInterval(function() {
-        if(maudio.currentPosition >= soundSprite[idx].end) {
-          maudio.pause(); // There is no stop() in HTML5
-          clearInterval(x);
-        }
-      }, 50);
-    }
+    window.addEventListener('load', function () {
+            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var source = audioCtx.createBufferSource();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/music/wedding.mp3');
+            xhr.responseType = 'arraybuffer';
+            xhr.addEventListener('load', function (r) {
+                audioCtx.decodeAudioData(
+                        xhr.response, 
+                        function (buffer) {
+                            source.buffer = buffer;
+                            source.connect(audioCtx.destination);
+                            source.loop = false;
+                        });
+                source.start(0);
+            });
+            xhr.send();
+        });
 </script>
 </body>
 </html>
