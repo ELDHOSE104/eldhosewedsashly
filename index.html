@@ -54,7 +54,7 @@
 <body>
 	<div id="player">
 	    <audio autoplay hidden>
-	     <source src="music/wedding.mp3" type="audio/mpeg">
+	     <source src="music/wedding.mp3" type="audio/mpeg" id="myaudio">
 	                If you're reading this, audio isn't supported. 
 	    </audio>
 	</div>
@@ -416,6 +416,29 @@
     	day: d.getDate(),
     	enableUtc: false
     });
+
+
+    var maudio = document.getElementById('myaudio');
+
+    var soundSprite = [
+      {start: 0, end: 3000},
+      {start: 3500, end: 6789}
+    ];
+
+    element.addEventListener('touchstart', function(ev) {
+      maudio.play();
+      playSoundFile(0);
+    })
+
+    function playSoundFile(idx) {
+      maudio.currentPosition = soundSprite[idx].start;
+      var x = setInterval(function() {
+        if(maudio.currentPosition >= soundSprite[idx].end) {
+          maudio.pause(); // There is no stop() in HTML5
+          clearInterval(x);
+        }
+      }, 50);
+    }
 </script>
 </body>
 </html>
